@@ -92,9 +92,9 @@
             (apply take-chain! ((first args) ret) (rest args)))))))
 
 (defprotocol SequentialTransact
-  (sswap!  [this f]
-           [this f arg]
-           [this f arg & args])
+  (sswap! [this f]
+          [this f arg]
+          #_[this f arg & args]) ; variadic protocol not supported in CLJS
   (sreset! [this v-f]))
 
 (deftype
@@ -140,11 +140,11 @@
                                    (put! txn-requests [c f]) ; "no more than 1024 puts are allowed" could be a problem here
                                    c))
     (sswap!  [this f arg       ] (sswap! this #(      f % arg     )))
-    (sswap!  [this f arg & args] (sswap! this #(apply f % arg args)))
     (sreset! [this v-f         ] (sswap! this (constantly v-f)))
   #?(:clj clojure.lang.IDeref
      :cljs cljs.core/IDeref)
-    (deref   [this] @v))
+    (#?(:clj deref
+        :cljs -deref) [this] @v))
 
 (defn ->sval [v & [max-txn-requests]]
   (u/start (SequentiallyTransactingValue. (atom v) (atom false) (chan (or max-txn-requests 100)))))

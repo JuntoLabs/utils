@@ -8,7 +8,8 @@
             #?(:clj  [clojure.repl                 :as repl ])
                      [#?(:clj  clojure.core.async
                          :cljs cljs.core.async   ) :as async
-                       :refer [chan offer! #?@(:clj [go go-loop])]]
+                       :refer [chan offer! take!
+                               #?@(:clj [go go-loop])]]
                      [#?(:clj  clj-http.client
                          :cljs cljs-http.client)   :as http  ]
             #?(:cljs [cljs.core :refer [ExceptionInfo]]))
@@ -390,3 +391,16 @@
 (defprotocol Lifecycle
   (start [this])
   (stop  [this]))
+
+; ===== UI ===== ;
+
+#?(:cljs
+(defn elem->bounds [elem]
+  (let [bounds (.getBoundingClientRect elem)]
+    ; TODO use js->clj?
+    {:left   (.-left   bounds)
+     :top    (.-top    bounds)
+     :right  (.-right  bounds)
+     :bottom (.-bottom bounds)
+     :width  (.-width  bounds)
+     :height (.-height bounds)})))
