@@ -10,7 +10,7 @@
                          :cljs cljs.core.async   ) :as async
                        :refer [chan offer! #?@(:clj [go go-loop])]]
                      [#?(:clj  clj-http.client
-                         :cljs cljs-http      )    :as http  ]
+                         :cljs cljs-http.client)   :as http  ]
             #?(:cljs [cljs.core :refer [ExceptionInfo]]))
   #?(:cljs (:require-macros
                      [junto-labs.utils.core
